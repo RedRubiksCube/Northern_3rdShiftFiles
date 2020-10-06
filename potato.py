@@ -5,8 +5,8 @@ import pyautogui, time, csv, os, datetime, logging
 #logging.basicConfig(level=logging.INFO, filename= '../Logs/Logs.log')
 
 root = Tk()
-root.title("Routing List")
-root.geometry("800x600")
+root.title("Third Shift Programs")
+root.geometry("300x300")
 
 #Below is code essential to creating the CSV file
 today = date.today()
@@ -21,15 +21,6 @@ day = str(today)[8:10]
 #if not os.path.exists(dir_month):
 #	os.mkdir(dir_month)
 
-#Get Date as int
-#Monday = 0 
-#Sunday = 6
-
-day = datetime.datetime.today().weekday()
-#day = 0
-file_run_time = datetime.datetime.now()
-
-
 #FRAMES
 welcome_frame = Frame(root)
 welcome_frame.grid(row=0, column=0)
@@ -43,24 +34,11 @@ produce_report_frame = Frame(root)
 
 #LISTS
 
-#Route lists
-#These lists are used for the Curtze Weight 
-Day_list = []
-Mon_routes = ['193','194','195'] 	# This will run if the day value is equal to 0
-Tues_routes = ['293','294','295']	# This will run if the day value is equal to 1
-Wed_routes = ['393','394','395'] 	# This will run if the day value is equal to 2
-Thurs_routes = ['492','494','495'] 	# This will run if the day value is equal to 3
-Fri_routes = ['593','594','595'] 	# This will run if the day value is equal to 4
-
 #INTRO LABEL
 welcome_label = Label(welcome_frame, text='Welcome to Northern Haserots Routing program. \n What would you like to do?')
 welcome_label.grid(row=0, column=0)
 
 #FUNCTIONS
-def P2():
-	welcome_frame.grid_forget()
-	asign_routes_frame.grid(row=0, column=0)
-
 def ass_routes():
 	pass
 
@@ -125,7 +103,7 @@ def produce_report():
 
 	pyautogui.typewrite('lpr -dprinter53 prt-produce')
 	pyautogui.press('enter')
-	time.sleep(5)
+	time.sleep(20)
 	close_TT()
 
 def distOut_email():
@@ -166,45 +144,59 @@ def distOut_email():
 
 	pyautogui.typewrite('l /usr/roadnet/rnetcust.txt')
 	pyautogui.press('enter')
-	time.sleep(5)
+	time.sleep(20)
 	close_TT()
 
 def curtzeweights():
+	#Get Date as int
+	#Monday = 0 
+	#Sunday = 6
+	day_num = datetime.datetime.today().weekday()
+
+	#Route lists
+	#These lists are used for the Curtze Weight 
+	Day_list = []
+	Mon_routes = ['193','194','195'] 	# This will run if the day value is equal to 0
+	Tues_routes = ['293','294','295']	# This will run if the day value is equal to 1
+	Wed_routes = ['393','394','395'] 	# This will run if the day value is equal to 2
+	Thurs_routes = ['492','494','495'] 	# This will run if the day value is equal to 3
+	Fri_routes = ['593','594','595'] 	# This will run if the day value is equal to 4
+
 	day_ran = pyautogui.prompt('Is this being ran before midnight? \n IE - If product is being shipped on Monday, is today technically Monday? \n Answer yes if true, Answer no if false.')
 		#Selects corret day values
 	if str(day_ran.lower()) == 'yes' or str(day_ran.lower()) == 'no':
 		if day_ran.lower() == 'yes':
-			if day == 6:
+			if day_num == 6:
 				Day_list = Mon_routes
 				logging.info('Routes ran for Monday') 
 			else:
-				day = day + 1
-				if day == 1:
+				day_num = day_num + 1
+				if day_num == 1:
 					Day_list = Tues_routes
 					logging.info('Routes ran for Tuesday')	
-				elif day == 2:
+				elif day_num == 2:
 					Day_list = Wed_routes
 					logging.info('Routes ran for Wednesday')	
-				elif day == 3:
+				elif day_num == 3:
 					Day_list = Thurs_routes
 					logging.info('Routes ran for Thursday')	
-				elif day == 4:
+				elif day_num == 4:
 					Day_list = Fri_routes
 					logging.info('Routes ran for Friday')	
 	else:
-		if day == 0:
+		if day_num == 0:
 			Day_list = Mon_routes
 			logging.info('Routes ran for Monday') 
-		elif day == 1:
+		elif day_num == 1:
 			Day_list = Tues_routes
 			logging.info('Routes ran for Tuesday')	
-		elif day == 2:
+		elif day_num == 2:
 			Day_list = Wed_routes
 			logging.info('Routes ran for Wednesday')	
-		elif day == 3:
+		elif day_num == 3:
 			Day_list = Thurs_routes
 			logging.info('Routes ran for Thursday')	
-		elif day == 4:
+		elif day_num == 4:
 			Day_list = Fri_routes
 			logging.info('Routes ran for Friday')
 
@@ -254,21 +246,24 @@ def curtzeweights():
 	time.sleep(1)
 	pyautogui.typewrite('nffitems')
 	pyautogui.press('enter')
+	time.sleep(20)
 	close_TT()
-
 
 #BUTTONS
 #Choose_routes_Button = Button(routing_frame, text="Run Routes", command=run_routes)
 #Choose_routes_Button.grid(row=14 ,column=2)
 
-assign_routes_button = Button(buttons_frame, text="Assign Routes", command=ass_routes)
-assign_routes_button.grid(row=0 ,column=0, columnspan=1)#, padx=20, pady=20)
+#assign_routes_button = Button(buttons_frame, text="Assign Routes", command=ass_routes)
+#assign_routes_button.grid(row=0 ,column=0, columnspan=1)#, padx=20, pady=20)
 
 email_out_button = Button(buttons_frame, text="Email District Outs", command=distOut_email)
 email_out_button.grid(row=1 ,column=0, columnspan=1)#, padx=20, pady=20)
 
 produce_report_button = Button(buttons_frame, text="Produce Report", command=produce_report)
 produce_report_button.grid(row=0 ,column=1, columnspan=2)#, padx=20, pady=20)
+
+curtze_weights_button = Button(buttons_frame, text="Process Curtze Weights", command=curtzeweights)
+curtze_weights_button.grid(row=1 ,column=1)#, padx=20, pady=20)
 
 #Not active
 	#change_driver_info_button = Button(buttons_frame, text="Update Driver Information", command=ass_routes)
